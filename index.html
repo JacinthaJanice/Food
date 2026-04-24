@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1200 Calorie Diet Plan</title>
+  <style>
+    /* ── Reset ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Food-themed background ─────────────────────────────────
+       Warm gradient overlaid with a repeating SVG food-icon pattern
+       (fork, spoon, leaf) encoded inline so no network request needed.
+    ─────────────────────────────────────────────────────────────── */
+    body {
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #3b1f05;
+
+      /* Warm food gradient */
+      background:
+        /* semi-transparent food icon pattern */
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Ctext x='10'  y='45'  font-size='32' opacity='.13'%3E%F0%9F%8D%85%3C/text%3E%3Ctext x='65'  y='35'  font-size='28' opacity='.12'%3E%F0%9F%A5%A6%3C/text%3E%3Ctext x='20'  y='95'  font-size='30' opacity='.13'%3E%F0%9F%8D%8B%3C/text%3E%3Ctext x='72'  y='100' font-size='28' opacity='.12'%3E%F0%9F%A5•%3C/text%3E%3Ctext x='45'  y='68'  font-size='26' opacity='.10'%3E%F0%9F%8D%9E%3C/text%3E%3C/svg%3E")
+        repeat,
+        /* base warm gradient */
+        linear-gradient(135deg, #fff8e1 0%, #ffe0b2 40%, #ffccbc 100%);
+    }
+
+    /* ── Floating food emoji decorations ───────────────────────── */
+    .food-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .food-bg span {
+      position: absolute;
+      font-size: 2.4rem;
+      opacity: 0.18;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0; }
+      10%  { opacity: 0.18; }
+      90%  { opacity: 0.18; }
+      100% { transform: translateY(-10vh)  rotate(360deg); opacity: 0; }
+    }
+
+    /* stagger positions & speeds */
+    .food-bg span:nth-child(1)  { left:  5%; animation-duration: 14s; animation-delay:  0s; }
+    .food-bg span:nth-child(2)  { left: 15%; animation-duration: 18s; animation-delay:  3s; }
+    .food-bg span:nth-child(3)  { left: 27%; animation-duration: 12s; animation-delay:  6s; }
+    .food-bg span:nth-child(4)  { left: 38%; animation-duration: 20s; animation-delay:  1s; }
+    .food-bg span:nth-child(5)  { left: 50%; animation-duration: 16s; animation-delay:  8s; }
+    .food-bg span:nth-child(6)  { left: 62%; animation-duration: 11s; animation-delay:  2s; }
+    .food-bg span:nth-child(7)  { left: 73%; animation-duration: 19s; animation-delay:  5s; }
+    .food-bg span:nth-child(8)  { left: 84%; animation-duration: 13s; animation-delay:  9s; }
+    .food-bg span:nth-child(9)  { left: 92%; animation-duration: 17s; animation-delay:  4s; }
+    .food-bg span:nth-child(10) { left: 22%; animation-duration: 15s; animation-delay: 11s; }
+    .food-bg span:nth-child(11) { left: 55%; animation-duration: 21s; animation-delay:  7s; }
+    .food-bg span:nth-child(12) { left: 78%; animation-duration: 10s; animation-delay: 13s; }
+
+    /* ── Page wrapper ───────────────────────────────────────────── */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────── */
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    header .plate {
+      font-size: 5rem;
+      display: block;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,.18));
+    }
+    header h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #bf360c;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 4px rgba(0,0,0,.08);
+    }
+    header p {
+      margin-top: 8px;
+      font-size: 1.05rem;
+      color: #6d4c41;
+    }
+
+    /* ── Calorie badge ──────────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ef6c00, #e64a19);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 6px 20px;
+      border-radius: 999px;
+      margin-top: 14px;
+      box-shadow: 0 3px 10px rgba(230,74,25,.35);
+      letter-spacing: .4px;
+    }
+
+    /* ── Meal cards grid ────────────────────────────────────────── */
+    .meals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      padding: 24px 28px;
+      box-shadow: 0 6px 24px rgba(191,54,12,.10);
+      border: 1px solid rgba(255,204,188,.6);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(191,54,12,.18);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .card-header .icon { font-size: 2rem; }
+    .card-header h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #bf360c;
+    }
+    .card-header .cal-tag {
+      margin-left: auto;
+      background: #fff3e0;
+      color: #e64a19;
+      font-size: .8rem;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 999px;
+      border: 1px solid #ffccbc;
+    }
+
+    .card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .card ul li {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: .95rem;
+      color: #4e342e;
+    }
+    .card ul li::before {
+      content: '▸';
+      color: #ef6c00;
+      flex-shrink: 0;
+    }
+
+    /* ── Tips section ───────────────────────────────────────────── */
+    .tips {
+      margin-top: 40px;
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(8px);
+      border-radius: 20px;
+      padding: 28px 32px;
+      box-shadow: 0 6px 24px rgba(191,54,12,.10);
+      border: 1px solid rgba(255,204,188,.6);
+    }
+    .tips h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #bf360c;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .tips ol {
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tips ol li { font-size: .95rem; color: #4e342e; line-height: 1.5; }
+
+    /* ── Footer ─────────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      margin-top: 56px;
+      font-size: .85rem;
+      color: #a1887f;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating food emoji background layer -->
+  <div class="food-bg" aria-hidden="true">
+    <span>🍎</span><span>🥦</span><span>🍋</span><span>🥕</span>
+    <span>🍇</span><span>🥑</span><span>🍓</span><span>🌽</span>
+    <span>🥝</span><span>🍊</span><span>🫐</span><span>🥗</span>
+  </div>
+
+  <div class="wrapper">
+
+    <!-- Header -->
+    <header>
+      <span class="plate">🍽️</span>
+      <h1>1200 Calorie Diet Plan</h1>
+      <p>A balanced, nutritious daily meal guide to help you reach your goals.</p>
+      <span class="badge">1200 kcal / day</span>
+    </header>
+
+    <!-- Meal cards -->
+    <div class="meals-grid">
+
+      <div class="card">
+        <div class="card-header">
+          <span class="icon">☀️</span>
+          <h2>Breakfast</h2>
+          <span class="cal-tag">~300 kcal</span>
+        </div>
+        <ul>
+          <li>1 cup oatmeal with skimmed milk</li>
+          <li>½ banana, sliced</li>
+          <li>1 boiled egg</li>
+          <li>1 cup green tea (unsweetened)</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="icon">🍎</span>
+          <h2>Morning Snack</h2>
+          <span class="cal-tag">~100 kcal</span>
+        </div>
+        <ul>
+          <li>1 small apple or pear</li>
+          <li>5 almonds</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="icon">🌞</span>
+          <h2>Lunch</h2>
+          <span class="cal-tag">~400 kcal</span>
+        </div>
+        <ul>
+          <li>¾ cup brown rice or 1 small whole-wheat wrap</li>
+          <li>100 g grilled chicken breast or tofu</li>
+          <li>1 cup steamed broccoli &amp; carrots</li>
+          <li>1 tsp olive oil dressing</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="icon">🥗</span>
+          <h2>Afternoon Snack</h2>
+          <span class="cal-tag">~100 kcal</span>
+        </div>
+        <ul>
+          <li>½ cup low-fat Greek yoghurt</li>
+          <li>A few berries or cucumber slices</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="icon">🌙</span>
+          <h2>Dinner</h2>
+          <span class="cal-tag">~300 kcal</span>
+        </div>
+        <ul>
+          <li>1 cup lentil or vegetable soup</li>
+          <li>85 g baked fish (salmon or cod)</li>
+          <li>Large mixed-leaf salad, lemon dressing</li>
+          <li>½ cup cooked quinoa</li>
+        </ul>
+      </div>
+
+    </div><!-- /meals-grid -->
+
+    <!-- Tips -->
+    <div class="tips">
+      <h2><span>💡</span> Helpful Tips</h2>
+      <ol>
+        <li>Drink at least <strong>8 glasses</strong> of water throughout the day.</li>
+        <li>Eat slowly and mindfully — it takes ~20 minutes for fullness signals to reach your brain.</li>
+        <li>Prep meals in advance to avoid reaching for high-calorie convenience foods.</li>
+        <li>Pair the plan with 30 minutes of light exercise most days for best results.</li>
+        <li>Consult a registered dietitian before making major dietary changes.</li>
+      </ol>
+    </div>
+
+    <footer>
+      <p>🌿 Eat well · Live well · Feel well 🌿</p>
+    </footer>
+
+  </div><!-- /wrapper -->
+
+</body>
+</html>
